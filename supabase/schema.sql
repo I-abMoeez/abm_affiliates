@@ -67,8 +67,10 @@ using (true);
 -- ─────────────────────────────────────────
 create table if not exists public.affiliate_clicks (
   id            uuid        primary key default gen_random_uuid(),
-  product_id    uuid        not null references public.affiliate_products(id) on delete cascade,
+  -- Public storefront sends numeric product IDs (1..N). Store them as text to avoid FK type mismatch.
+  product_id    text        not null,
   affiliate_url text,
+
   user_agent    text,
   ip            inet,
   country_code  text,

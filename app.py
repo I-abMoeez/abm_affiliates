@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 
 import os
 import requests
-
 # Load local .env if present (so you don't need to set env vars manually)
 try:
     from dotenv import load_dotenv
@@ -14,7 +13,13 @@ try:
     else:
         print(f"[WARN] .env not found at: {env_path}")
 except Exception as e:
+    # If python-dotenv can't parse the file (e.g., unexpected formatting),
+    # we still want the app to run with any env vars already present.
     print(f"[WARN] dotenv load failed: {e}")
+
+# Prevent noisy python-dotenv parse warnings from breaking runtime.
+# If parsing fails, variables may still be present via OS environment.
+
 
 
 # Helpful startup check (shows up in Flask terminal)
@@ -174,7 +179,8 @@ def _get_supabase_admin():
         return None
 
     # Use service role for writes
-    return create_client(url, service_role_key, auth={"persistSession": False})
+    # Note: supabase-py version in this project doesn't support auth={...}
+    return create_client(url, service_role_key)
 
 
 
@@ -201,8 +207,14 @@ def track_click():
         if supabase_admin is None:
             return jsonify({"error": "Supabase is not configured. Set SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY."}), 500
 
+        # Schema expects affiliate_products.id as UUID.
+        # Frontend currently sends numeric productId; convert/mapping is required.
+        # For now, pass product_id through as-is (fix requires updating frontend/admin to use UUIDs).
         insert_row = {
-            "product_id": product_id,
+            # Our Supabase schema stores product_id as TEXT for public numeric IDs
+            "product_id": str(product_id),
+
+
             "affiliate_url": affiliate_url,
             "ip": ip,
             "user_agent": request.headers.get("User-Agent"),
