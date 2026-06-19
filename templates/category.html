@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.label }} Reviews — LensDesk{% endblock %}
+
+{% block background %}
+<div class="page-bg" style="background: radial-gradient(ellipse 90% 50% at 50% -10%, #1a1528 0%, #050508 60%);"></div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Category Hero -->
+<div class="cat-hero">
+  <p class="cat-hero-eyebrow">{{ category.label }} · {{ category.count }} products</p>
+  <h1>{{ category.icon }} {{ category.label }}</h1>
+  <p>{{ category.desc }} — handpicked and thoroughly tested by our editorial team.</p>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <button class="filter-pill active">All</button>
+  <button class="filter-pill">Best Rated</button>
+  <button class="filter-pill">Price: Low → High</button>
+  <button class="filter-pill">Biggest Savings</button>
+  <button class="filter-pill">New Arrivals</button>
+</div>
+
+<!-- Products -->
+<div class="section" style="padding-top: 0;">
+  {% if products %}
+  <div class="products-grid">
+    {% for p in products %}
+    <a href="/product/{{ p.id }}" class="product-card liquid-glass">
+      <div class="product-card-img">
+        <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
+        {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+      </div>
+      <div class="product-card-body">
+        <p class="product-cat">{{ p.category_label }}</p>
+        <h3 class="product-name">{{ p.name }}</h3>
+        <p class="product-desc">{{ p.description }}</p>
+        <div class="product-footer">
+          <div class="product-price">
+            <span class="price-now">${{ "%.0f"|format(p.price) }}</span>
+            {% if p.original_price > p.price %}
+            <span class="price-was">${{ "%.0f"|format(p.original_price) }}</span>
+            {% endif %}
+          </div>
+          <div class="rating">
+            <span class="rating-star">★</span>
+            <span>{{ p.rating }}</span>
+          </div>
+        </div>
+
+        <div class="product-buy-row">
+          <a
+            href="{{ p.affiliate_url }}"
+            target="_blank"
+            rel="noopener sponsored"
+            class="btn-primary product-buy-btn"
+            data-product-id="{{ p.id }}"
+            data-affiliate-url="{{ p.affiliate_url }}"
+            onclick="event.stopPropagation()"
+          >
+
+            Buy now
+          </a>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center; padding: 5rem 0; color: rgba(255,255,255,0.4);">
+    <p style="font-size:2rem; margin-bottom:1rem;">{{ category.icon }}</p>
+    <p>No products yet in this category. Check back soon.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Browse other categories -->
+<section class="section" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 4rem;">
+  <div class="section-header">
+    <h2 class="section-title">Browse other categories</h2>
+  </div>
+  <div class="categories-grid">
+    {% for cat in categories if cat.slug != category.slug %}
+    <a href="/category/{{ cat.slug }}" class="cat-card liquid-glass">
+      <span class="cat-icon">{{ cat.icon }}</span>
+      <p class="cat-label">{{ cat.label }}</p>
+      <p class="cat-desc">{{ cat.desc }}</p>
+      <p class="cat-count">{{ cat.count }} reviews</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

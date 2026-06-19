@@ -1,0 +1,267 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.ld-wrap{font-family:'Inter',sans-serif;background:#06060a;color:#fff;border-radius:var(--border-radius-lg);overflow:hidden;min-height:900px}
+.lg{background:rgba(255,255,255,0.03);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);position:relative;overflow:hidden}
+.lg::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.2px;background:linear-gradient(180deg,rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.1) 25%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.1) 75%,rgba(255,255,255,0.4) 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-radius:9999px;margin:16px 20px}
+.nav-logo{font-family:'Inter',sans-serif;font-weight:600;font-size:15px;color:#fff;display:flex;align-items:center;gap:7px}
+.nav-logo-dot{width:8px;height:8px;border-radius:50%;background:#c8a96e}
+.nav-links{display:flex;gap:22px}
+.nav-link{font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);cursor:pointer;transition:color .2s}
+.nav-link:hover{color:#fff}
+.nav-link.active{color:#fff}
+.nav-btn{font-size:12px;font-weight:500;color:#fff;padding:7px 18px;border-radius:9999px;cursor:pointer;transition:background .2s}
+.nav-btn:hover{background:rgba(255,255,255,0.06)}
+.hero{text-align:center;padding:52px 24px 44px;position:relative}
+.hero-eye{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#c8a96e;margin-bottom:14px}
+.hero-h{font-family:'Instrument Serif',serif;font-size:46px;line-height:1.05;letter-spacing:-.025em;color:#fff;margin-bottom:14px}
+.hero-h em{font-style:italic;color:#c8a96e}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:380px;margin:0 auto 28px}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.btn-gold{background:#c8a96e;color:#1a1200;font-size:12px;font-weight:600;padding:10px 24px;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s;font-family:'Inter',sans-serif}
+.btn-gold:hover{opacity:.88}
+.btn-ghost{font-size:12px;font-weight:500;color:#fff;padding:10px 20px;border-radius:9999px;cursor:pointer;transition:background .2s}
+.btn-ghost:hover{background:rgba(255,255,255,0.05)}
+.stats-row{display:flex;justify-content:center;gap:32px;padding:0 24px 40px}
+.stat{text-align:center}
+.stat-n{font-family:'Instrument Serif',serif;font-size:24px;color:#fff;margin-bottom:2px}
+.stat-l{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.divider{height:1px;background:rgba(255,255,255,0.06);margin:0 20px}
+.section{padding:36px 20px}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.sec-title{font-family:'Instrument Serif',serif;font-size:22px;color:#fff;letter-spacing:-.02em}
+.sec-more{font-size:11px;font-weight:500;color:#c8a96e;cursor:pointer;letter-spacing:.05em}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pcard{border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .22s}
+.pcard:hover{transform:translateY(-3px)}
+.pcard-img{height:150px;overflow:hidden;position:relative}
+.pcard-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
+.pcard:hover .pcard-img img{transform:scale(1.06)}
+.badge{position:absolute;top:10px;left:10px;background:#c8a96e;color:#1a1200;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:9999px}
+.pcard-body{padding:14px}
+.pcard-cat{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#c8a96e;margin-bottom:4px}
+.pcard-name{font-size:13px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:6px}
+.pcard-desc{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.55;margin-bottom:12px}
+.pcard-foot{display:flex;align-items:center;justify-content:space-between}
+.price-now{font-size:15px;font-weight:600;color:#fff}
+.price-was{font-size:11px;color:rgba(255,255,255,0.3);text-decoration:line-through;margin-left:5px}
+.stars{font-size:10px;color:#c8a96e;letter-spacing:.05em}
+.buy-btn{width:100%;margin-top:10px;background:#c8a96e;color:#1a1200;font-size:11px;font-weight:600;padding:9px 0;border-radius:9999px;border:none;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s}
+.buy-btn:hover{opacity:.85}
+.buy-btn.active{background:rgba(100,200,120,0.18);color:#6dc889}
+.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ccat{border-radius:12px;padding:18px 14px;cursor:pointer;transition:transform .2s,background .2s}
+.ccat:hover{transform:translateY(-2px);background:rgba(255,255,255,0.05)}
+.ccat-icon{font-size:20px;margin-bottom:8px;display:block}
+.ccat-name{font-family:'Instrument Serif',serif;font-size:14px;color:#fff;margin-bottom:3px}
+.ccat-n{font-size:10px;color:#c8a96e;font-weight:500}
+.newsletter{border-radius:16px;padding:28px;text-align:center;margin:0 0 8px}
+.nl-h{font-family:'Instrument Serif',serif;font-size:20px;color:#fff;margin-bottom:6px}
+.nl-sub{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:18px;line-height:1.6}
+.email-row{display:flex;align-items:center;gap:8px;border-radius:9999px;padding:6px 6px 6px 16px;max-width:360px;margin:0 auto}
+.email-row input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:12px;font-family:'Inter',sans-serif}
+.email-row input::placeholder{color:rgba(255,255,255,0.35)}
+.email-sub-btn{background:#fff;border:none;border-radius:9999px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s}
+.email-sub-btn:hover{opacity:.85}
+.footer-bar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-top:1px solid rgba(255,255,255,0.06);margin-top:8px}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:16px;color:rgba(255,255,255,0.7)}
+.footer-note{font-size:10px;color:rgba(255,255,255,0.25)}
+.toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(100,200,120,0.15);border:0.5px solid rgba(100,200,120,0.3);color:#6dc889;font-size:11px;font-weight:500;padding:8px 18px;border-radius:9999px;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
+</style>
+
+<h2 class="sr-only">LensDesk affiliate marketing homepage with product cards and buy now buttons</h2>
+
+<div class="ld-wrap" style="position:relative">
+
+  <nav class="nav lg">
+    <div class="nav-logo">
+      <div class="nav-logo-dot"></div>
+      LensDesk
+    </div>
+    <div class="nav-links">
+      <span class="nav-link active">Home</span>
+      <span class="nav-link">Audio</span>
+      <span class="nav-link">Laptops</span>
+      <span class="nav-link">TVs</span>
+      <span class="nav-link">Cameras</span>
+    </div>
+    <span class="nav-btn lg">Subscribe</span>
+  </nav>
+
+  <div class="hero">
+    <p class="hero-eye">Curated tech reviews &amp; deals</p>
+    <h1 class="hero-h">Built for the <em>curious</em></h1>
+    <p class="hero-sub">Expert picks, honest comparisons, and the best prices — on the gear that actually matters.</p>
+    <div class="hero-actions">
+      <button class="btn-gold">
+        Explore picks
+        <i class="ti ti-arrow-right" style="font-size:13px" aria-hidden="true"></i>
+      </button>
+      <button class="btn-ghost lg" style="border-radius:9999px">View all deals</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">6,200+</div><div class="stat-l">Products reviewed</div></div>
+    <div class="stat"><div class="stat-n">$2.4M</div><div class="stat-l">Reader savings</div></div>
+    <div class="stat"><div class="stat-n">98%</div><div class="stat-l">Trust score</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="sec-header">
+      <h2 class="sec-title">Featured this week</h2>
+      <span class="sec-more">View all →</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="pcard lg">
+        <div class="pcard-img">
+          <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&q=80" alt="Sony WH-1000XM5" />
+          <span class="badge">Best seller</span>
+        </div>
+        <div class="pcard-body">
+          <p class="pcard-cat">Audio</p>
+          <h3 class="pcard-name">Sony WH-1000XM5</h3>
+          <p class="pcard-desc">Industry-leading ANC with 30-hour battery. The gold standard.</p>
+          <div class="pcard-foot">
+            <div><span class="price-now">$349</span><span class="price-was">$399</span></div>
+            <span class="stars">★★★★★ 4.8</span>
+          </div>
+          <button class="buy-btn" onclick="handleBuy(this,'Sony WH-1000XM5')">
+            <i class="ti ti-shopping-cart" style="font-size:12px" aria-hidden="true"></i>
+            Buy now
+          </button>
+        </div>
+      </div>
+
+      <div class="pcard lg" style="border:1.5px solid rgba(200,169,110,0.45)">
+        <div class="pcard-img">
+          <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&q=80" alt="MacBook Air M3" />
+          <span class="badge">Editor's pick</span>
+        </div>
+        <div class="pcard-body">
+          <p class="pcard-cat">Laptops</p>
+          <h3 class="pcard-name">Apple MacBook Air M3</h3>
+          <p class="pcard-desc">M3 chip, 18-hour battery, fanless. Impossibly thin.</p>
+          <div class="pcard-foot">
+            <div><span class="price-now">$1,099</span><span class="price-was">$1,299</span></div>
+            <span class="stars">★★★★★ 4.9</span>
+          </div>
+          <button class="buy-btn" onclick="handleBuy(this,'MacBook Air M3')">
+            <i class="ti ti-shopping-cart" style="font-size:12px" aria-hidden="true"></i>
+            Buy now
+          </button>
+        </div>
+      </div>
+
+      <div class="pcard lg">
+        <div class="pcard-img">
+          <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80" alt="DJI Mini 4 Pro" />
+          <span class="badge">New</span>
+        </div>
+        <div class="pcard-body">
+          <p class="pcard-cat">Cameras</p>
+          <h3 class="pcard-name">DJI Mini 4 Pro</h3>
+          <p class="pcard-desc">Under 249g with 4K/60fps and obstacle sensing.</p>
+          <div class="pcard-foot">
+            <div><span class="price-now">$759</span></div>
+            <span class="stars">★★★★★ 4.8</span>
+          </div>
+          <button class="buy-btn" onclick="handleBuy(this,'DJI Mini 4 Pro')">
+            <i class="ti ti-shopping-cart" style="font-size:12px" aria-hidden="true"></i>
+            Buy now
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" style="padding-bottom:28px">
+    <div class="sec-header">
+      <h2 class="sec-title">Browse by category</h2>
+    </div>
+    <div class="cats-grid">
+      <div class="ccat lg">
+        <span class="ccat-icon"><i class="ti ti-headphones" style="font-size:22px;color:rgba(255,255,255,0.7)" aria-hidden="true"></i></span>
+        <div class="ccat-name">Audio</div>
+        <div class="ccat-n">24 reviews</div>
+      </div>
+      <div class="ccat lg">
+        <span class="ccat-icon"><i class="ti ti-device-laptop" style="font-size:22px;color:rgba(255,255,255,0.7)" aria-hidden="true"></i></span>
+        <div class="ccat-name">Laptops</div>
+        <div class="ccat-n">18 reviews</div>
+      </div>
+      <div class="ccat lg">
+        <span class="ccat-icon"><i class="ti ti-device-tv" style="font-size:22px;color:rgba(255,255,255,0.7)" aria-hidden="true"></i></span>
+        <div class="ccat-name">TVs</div>
+        <div class="ccat-n">11 reviews</div>
+      </div>
+      <div class="ccat lg">
+        <span class="ccat-icon"><i class="ti ti-camera" style="font-size:22px;color:rgba(255,255,255,0.7)" aria-hidden="true"></i></span>
+        <div class="ccat-name">Cameras</div>
+        <div class="ccat-n">16 reviews</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section" style="padding-bottom:28px">
+    <div class="newsletter lg">
+      <h2 class="nl-h">Never miss a deal</h2>
+      <p class="nl-sub">Weekly digest of the best buys and biggest price drops. No spam, ever.</p>
+      <div class="email-row lg">
+        <input type="email" placeholder="Enter your email" id="nl-email" />
+        <button class="email-sub-btn" onclick="handleSubscribe()" aria-label="Subscribe">
+          <i class="ti ti-arrow-right" style="font-size:16px;color:#000" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span class="footer-logo">LensDesk</span>
+    <span class="footer-note">Affiliate links disclosed · © 2025 LensDesk</span>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0'},2200);
+}
+function handleBuy(btn,name){
+  btn.classList.add('active');
+  btn.innerHTML='<i class="ti ti-check" style="font-size:12px"></i> Added to cart';
+  showToast(name+' added to cart');
+  setTimeout(function(){
+    btn.classList.remove('active');
+    btn.innerHTML='<i class="ti ti-shopping-cart" style="font-size:12px" aria-hidden="true"></i> Buy now';
+  },2000);
+}
+function handleSubscribe(){
+  var inp=document.getElementById('nl-email');
+  if(inp.value.includes('@')){
+    inp.value='';
+    inp.placeholder='You\'re subscribed ✓';
+    showToast('Subscribed! Welcome to LensDesk.');
+  }
+}
+document.querySelectorAll('.nav-link').forEach(function(l){
+  l.addEventListener('click',function(){
+    document.querySelectorAll('.nav-link').forEach(function(x){x.classList.remove('active')});
+    l.classList.add('active');
+  });
+});
+</script>

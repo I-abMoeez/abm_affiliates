@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}LensDesk — Find What's Worth Buying{% endblock %}
+
+{% block background %}
+<div class="video-bg-wrap">
+  <video id="bg-video" autoplay muted playsinline loop="false" preload="auto">
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4" type="video/mp4" />
+  </video>
+  <div class="video-overlay"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+  <p class="hero-eyebrow">Curated Tech Reviews &amp; Deals</p>
+  <h1 class="hero-heading">Built for the <em>curious</em></h1>
+  <p class="hero-sub">Expert picks, honest comparisons, and the best prices — on the gear that actually matters.</p>
+
+  <div class="email-bar liquid-glass">
+    <input type="email" placeholder="Enter your email" />
+    <button aria-label="Subscribe">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+  <p style="font-size:0.78rem; color:rgba(255,255,255,0.4); margin-bottom:1.5rem; line-height:1.6; max-width:420px;">
+    Stay updated with the latest reviews and deals. Subscribe and never miss out on what's worth buying.
+  </p>
+
+  <a href="#featured" class="explore-btn liquid-glass">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Explore picks
+  </a>
+</section>
+
+<!-- Featured Products -->
+<section class="section" id="featured">
+  <div class="section-header">
+    <h2 class="section-title">Featured this week</h2>
+    <a href="/category/audio" class="section-link">See all →</a>
+  </div>
+  <div class="products-grid">
+    {% for p in products %}
+    <a href="/product/{{ p.id }}" class="product-card liquid-glass">
+      <div class="product-card-img">
+        <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
+        {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+      </div>
+      <div class="product-card-body">
+        <p class="product-cat">{{ p.category_label }}</p>
+        <h3 class="product-name">{{ p.name }}</h3>
+        <p class="product-desc">{{ p.description }}</p>
+        <div class="product-footer">
+          <div class="product-price">
+            <span class="price-now">${{ "%.0f"|format(p.price) }}</span>
+            {% if p.original_price > p.price %}
+            <span class="price-was">${{ "%.0f"|format(p.original_price) }}</span>
+            {% endif %}
+          </div>
+          <div class="rating">
+            <span class="rating-star">★</span>
+            <span>{{ p.rating }} ({{ "{:,}".format(p.reviews) }})</span>
+          </div>
+        </div>
+
+        <div class="product-buy-row">
+          <a
+            href="{{ p.affiliate_url }}"
+            target="_blank"
+            rel="noopener sponsored"
+            class="btn-primary product-buy-btn"
+            data-product-id="{{ p.id }}"
+            data-affiliate-url="{{ p.affiliate_url }}"
+            onclick="event.stopPropagation()"
+          >
+
+            Buy now
+          </a>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Browse by category</h2>
+  </div>
+  <div class="categories-grid">
+    {% for cat in categories %}
+    <a href="/category/{{ cat.slug }}" class="cat-card liquid-glass">
+      <span class="cat-icon">{{ cat.icon }}</span>
+      <p class="cat-label">{{ cat.label }}</p>
+      <p class="cat-desc">{{ cat.desc }}</p>
+      <p class="cat-count">{{ cat.count }} reviews</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section" id="newsletter">
+  <div class="newsletter-box liquid-glass">
+    <h2>Never miss a deal</h2>
+    <p>We track hundreds of products weekly. Get our curated digest of the best buys and biggest price drops.</p>
+    <div class="email-bar liquid-glass" style="max-width:100%;">
+      <input type="email" placeholder="Enter your email" />
+      <button aria-label="Subscribe">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Social -->
+<div class="social-row">
+  <a href="#" class="social-btn liquid-glass" aria-label="Instagram">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+  </a>
+  <a href="#" class="social-btn liquid-glass" aria-label="Twitter / X">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16M4 20L20 4"/></svg>
+  </a>
+  <a href="#" class="social-btn liquid-glass" aria-label="Website">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+  </a>
+</div>
+
+{% endblock %}

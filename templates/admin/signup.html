@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Signup — LensDesk{% endblock %}
+
+{% block content %}
+<div style="max-width:520px;margin:3rem auto;">
+  <div class="liquid-glass" style="padding:2rem;border-radius:16px;">
+    <h1 style="margin:0 0 1rem 0;">Admin Signup</h1>
+    <p style="color:rgba(255,255,255,0.6);margin-top:-0.5rem;">
+      Create an account for admin access.
+    </p>
+
+    {% if error %}
+      <p style="color:#ff8080;margin:1rem 0;">{{ error }}</p>
+    {% endif %}
+    {% if message %}
+      <p style="color:#86efac;margin:1rem 0;">{{ message }}</p>
+    {% endif %}
+
+    <form method="POST" action="/admin/signup" style="display:flex;flex-direction:column;gap:0.75rem; margin-top:1.25rem;">
+      <label style="display:flex;flex-direction:column;gap:0.35rem;">
+        Email
+        <input type="email" name="email" required value="" />
+      </label>
+
+      <label style="display:flex;flex-direction:column;gap:0.35rem;">
+        Password
+        <input type="password" name="password" required />
+      </label>
+
+      <label style="display:flex;flex-direction:column;gap:0.35rem;">
+        Confirm Password
+        <input type="password" name="password_confirm" required />
+      </label>
+
+      <label style="display:flex;flex-direction:column;gap:0.35rem;">
+        Admin Invite Code
+        <input type="text" name="invite_code" required />
+      </label>
+
+      <button type="submit" class="btn-primary" style="margin-top:0.5rem;">Create account</button>
+    </form>
+
+    <div style="margin-top:1.25rem; color:rgba(255,255,255,0.7);">
+      Already have an account?
+      <a href="/admin/login" style="color:rgba(255,255,255,0.95); text-decoration:underline;">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

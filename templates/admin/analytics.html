@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Analytics — LensDesk{% endblock %}
+
+{% block content %}
+<div style="max-width:1100px;margin:2rem auto;">
+  <div class="liquid-glass" style="padding:1.5rem;border-radius:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <div>
+        <h1 style="margin:0;">Analytics</h1>
+        <p style="color:rgba(255,255,255,0.6);margin:0.25rem 0 0 0;">Clicks by country & product</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <a class="btn-secondary liquid-glass" href="/admin/products" style="text-decoration:none;">Products</a>
+        <form method="POST" action="/admin/logout">
+          <button class="btn-secondary liquid-glass" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;">
+      <div class="liquid-glass" style="padding:1rem;border-radius:14px;background:rgba(255,255,255,0.02);">
+        <div style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Total clicks</div>
+        <div style="font-size:2rem;font-weight:800;">{{ total_count }}</div>
+      </div>
+      <div class="liquid-glass" style="padding:1rem;border-radius:14px;background:rgba(255,255,255,0.02);">
+        <div style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Top country (90 days)</div>
+        {% if top_countries and top_countries|length > 0 %}
+          <div style="font-size:1.35rem;font-weight:700;">{{ top_countries[0].country_code }}{% if top_countries[0].country_name %} — {{ top_countries[0].country_name }}{% endif %}</div>
+          <div style="color:rgba(255,255,255,0.75);margin-top:0.25rem;">{{ top_countries[0].count }} clicks</div>
+        {% else %}
+          <div style="font-size:1.1rem;font-weight:700;">No data</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <h2 style="margin:0 0 0.75rem 0;font-size:1rem;">Top Countries (90 days)</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="text-align:left;">
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Country</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in top_countries %}
+          <tr>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div style="font-weight:650;">{{ c.country_code }}</div>
+              <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">{{ c.country_name or '-' }}</div>
+            </td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:700;">{{ c.count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <h2 style="margin:0 0 0.75rem 0;font-size:1rem;">Top Products</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="text-align:left;">
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Product</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in top_products %}
+          <tr>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div style="font-weight:650;">{{ p.name }}</div>
+              <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">{{ p.product_id }}</div>
+            </td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:700;">{{ p.count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

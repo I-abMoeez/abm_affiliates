@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Products — LensDesk{% endblock %}
+
+{% block content %}
+<div style="max-width:1100px;margin:2rem auto;">
+  <div class="liquid-glass" style="padding:1.5rem 1.5rem 1rem;border-radius:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <div>
+        <h1 style="margin:0;">Products</h1>
+        <p style="color:rgba(255,255,255,0.6);margin:0.25rem 0 0 0;">Manage affiliate products</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <a class="btn-secondary liquid-glass" href="/admin/analytics" style="text-decoration:none;">Analytics</a>
+        <a class="btn-primary" href="/admin/products/new" style="text-decoration:none;">+ New</a>
+        <form method="POST" action="/admin/logout">
+          <button class="btn-secondary liquid-glass" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+
+    <div style="margin-top:1.25rem;overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="text-align:left;">
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Name</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Category</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Affiliate</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Updated</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;gap:0.75rem;align-items:center;">
+                <img src="{{ it.image_url }}" alt="{{ it.name }}" style="width:42px;height:42px;object-fit:cover;border-radius:10px;" />
+                <div>
+                  <div style="font-weight:600;">{{ it.name }}</div>
+                  <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);">{{ it.id }}</div>
+                </div>
+              </div>
+            </td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">{{ it.category or '-' }}</td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              {{ it.affiliate_link }}
+            </td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">{{ it.updated_at }}</td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <a class="btn-secondary liquid-glass" style="text-decoration:none;" href="/admin/products/{{ it.id }}/edit">Edit</a>
+                <form method="POST" action="/admin/products/{{ it.id }}/delete" onsubmit="return confirm('Delete this product?');">
+                  <button class="btn-secondary liquid-glass" type="submit">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

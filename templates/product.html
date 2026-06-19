@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} Review — LensDesk{% endblock %}
+
+{% block background %}
+<div class="page-bg" style="background: radial-gradient(ellipse 70% 40% at 60% 0%, #1a1825 0%, #050508 65%);"></div>
+{% endblock %}
+
+{% block content %}
+
+<div class="product-page">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/category/{{ product.category }}">{{ product.category_label }}</a>
+    <span>›</span>
+    <span style="color:rgba(255,255,255,0.7);">{{ product.name }}</span>
+  </nav>
+
+  <!-- Main Layout -->
+  <div class="product-layout">
+
+    <!-- Gallery -->
+    <div class="product-gallery">
+      <img class="product-main-img liquid-glass" src="{{ product.image }}" alt="{{ product.name }}" />
+      <div style="display:flex; gap:0.5rem;">
+        <div class="liquid-glass" style="border-radius:10px; padding:0.5rem 1rem; font-size:0.75rem; color:rgba(255,255,255,0.5);">
+          🔒 Verified by LensDesk
+        </div>
+        <div class="liquid-glass" style="border-radius:10px; padding:0.5rem 1rem; font-size:0.75rem; color:rgba(255,255,255,0.5);">
+          ✓ Affiliate disclosed
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="product-info">
+      <p class="product-cat">{{ product.category_label }}</p>
+
+      {% if product.badge %}
+      <span class="badge" style="position:static; display:inline-block; margin-bottom:1rem;">{{ product.badge }}</span>
+      {% endif %}
+
+      <h1>{{ product.name }}</h1>
+
+      <!-- Rating -->
+      <div class="rating-row">
+        <span class="stars">
+          {% for i in range(product.rating|int) %}★{% endfor %}{% if product.rating % 1 >= 0.5 %}½{% endif %}
+        </span>
+        <span style="color:rgba(255,255,255,0.9); font-size:0.9rem; font-weight:600;">{{ product.rating }}</span>
+        <span class="rating-count">{{ "{:,}".format(product.reviews) }} reviews</span>
+      </div>
+
+      <!-- Price -->
+      <div class="product-price-row">
+        <span class="product-price-now">${{ "%.2f"|format(product.price) }}</span>
+        {% if product.original_price > product.price %}
+        <span class="product-price-was">${{ "%.2f"|format(product.original_price) }}</span>
+        {% set savings = ((product.original_price - product.price) / product.original_price * 100)|int %}
+        <span class="savings-badge">{{ savings }}% off</span>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      <p class="product-long-desc">{{ product.description }}</p>
+
+      <!-- Feature chips -->
+      <div class="feature-chips">
+        {% for f in product.features %}
+        <span class="chip">{{ f }}</span>
+        {% endfor %}
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-row">
+        <a href="{{ product.affiliate_url }}" target="_blank" rel="noopener sponsored" class="btn-primary"
+           data-product-id="{{ product.id }}" data-affiliate-url="{{ product.affiliate_url }}">
+
+          Buy now
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="btn-secondary liquid-glass" style="border-radius:9999px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Save
+        </a>
+      </div>
+
+      <p class="affiliate-notice">
+        ⚡ LensDesk earns a commission from qualifying purchases via affiliate links. This does not influence our editorial ratings or reviews.
+      </p>
+
+      <!-- Specs box -->
+      <div class="liquid-glass" style="border-radius:14px; padding:1.5rem; margin-top:2rem;">
+        <h3 style="font-size:0.8rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:1.25rem;">Quick specs</h3>
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem;">
+            <span style="color:rgba(255,255,255,0.5);">Category</span>
+            <span style="color:rgba(255,255,255,0.9);">{{ product.category_label }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem;">
+            <span style="color:rgba(255,255,255,0.5);">LensDesk rating</span>
+            <span style="color:rgba(255,255,255,0.9);">{{ product.rating }} / 5.0</span>
+          </div>
+          {% for f in product.features %}
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; {% if not loop.last %}border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.75rem;{% endif %}">
+            <span style="color:rgba(255,255,255,0.5);">Feature {{ loop.index }}</span>
+            <span style="color:rgba(255,255,255,0.9);">{{ f }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related -->
+  {% if related %}
+  <div class="related-section">
+    <div class="section-header" style="margin-bottom:2rem;">
+      <h2 class="section-title">More in {{ product.category_label }}</h2>
+      <a href="/category/{{ product.category }}" class="section-link">View all →</a>
+    </div>
+    <div class="products-grid">
+      {% for p in related %}
+      <a href="/product/{{ p.id }}" class="product-card liquid-glass">
+        <div class="product-card-img">
+          <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
+          {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+        </div>
+        <div class="product-card-body">
+          <p class="product-cat">{{ p.category_label }}</p>
+          <h3 class="product-name">{{ p.name }}</h3>
+          <p class="product-desc">{{ p.description }}</p>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-now">${{ "%.0f"|format(p.price) }}</span>
+            </div>
+            <div class="rating">
+              <span class="rating-star">★</span>
+              <span>{{ p.rating }}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
