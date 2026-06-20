@@ -50,6 +50,7 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "imoeezqureshi@gmail.com")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "memoeez7294")
 
 
+
 # Secret for Flask sessions
 FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "dev-secret-change-me")
 app.secret_key = FLASK_SECRET_KEY
@@ -84,8 +85,10 @@ def _get_supabase_clients():
         return None, None
 
     try:
-        supabase_admin = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, auth={"persistSession": False})
-        supabase_anon = create_client(SUPABASE_URL, SUPABASE_ANON_KEY, auth={"persistSession": False})
+        # supabase-py v2.x create_client signature does not accept `auth=`.
+        # Creating clients without extra options keeps it compatible across versions.
+        supabase_admin = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        supabase_anon = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
         return supabase_anon, supabase_admin
     except Exception:
         return None, None
@@ -131,7 +134,11 @@ def admin_login():
             email = (request.form.get("email") or "").strip().lower()
             password = request.form.get("password") or ""
 
-            if email == (ADMIN_EMAIL or "").strip().lower() and password == (ADMIN_PASSWORD or ""):
+            # Avoid subtle truthiness bugs by normalizing once.
+            expected_email = (ADMIN_EMAIL or "").strip().lower()
+            expected_password = ADMIN_PASSWORD or ""
+
+            if email == expected_email and password == expected_password:
                 session["admin_role"] = "admin"
                 session["admin_authenticated"] = True
                 session["admin_email"] = email
@@ -144,6 +151,7 @@ def admin_login():
             attempts.append(now)
             _login_attempts[key] = attempts
             error = "Invalid email or password"
+
 
 
     return render_template("admin/login.html", error=error, admin_email=ADMIN_EMAIL)
@@ -172,7 +180,7 @@ def admin_products():
     items = []
     data = (
         supabase_anon.table("affiliate_products")
-        .select("id,name,category_id,category,image_url,affiliate_link,description,created_at,updated_at")
+        .select("id,name,category_id,category,image_url,affiliate_link,created_at,updated_at")
         .order("created_at", desc=True)
         .limit(200)
         .execute()
