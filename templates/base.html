@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 <body>
@@ -29,6 +30,10 @@
         <span>Ab_m affiliates</span>
       </a>
       <div class="nav-links">
+        <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
+        {% for s in stores %}
+        <a href="/store/{{ s.slug }}" class="nav-link {% if request.path == '/store/' + s.slug %}active{% endif %}">{{ s.label }}</a>
+        {% endfor %}
         {% for cat in categories %}
         <a href="/category/{{ cat.slug }}" class="nav-link {% if request.path == '/category/' + cat.slug %}active{% endif %}">{{ cat.label }}</a>
         {% endfor %}

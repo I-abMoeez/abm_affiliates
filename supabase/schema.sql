@@ -28,6 +28,8 @@ using (true);
 create table if not exists public.affiliate_products (
   id             uuid        primary key default gen_random_uuid(),
   name           text        not null,
+  store          text        not null default 'amazon',
+  manual_url     text        default '',
   category_id    uuid        references public.affiliate_categories(id) on delete set null,
   category       text,
   image_url      text,
@@ -91,6 +93,10 @@ create table if not exists public.affiliate_clicks (
 alter table public.affiliate_clicks
   add column if not exists country_code text,
   add column if not exists country_name text;
+
+alter table public.affiliate_products
+  add column if not exists store text not null default 'amazon',
+  add column if not exists manual_url text default '';
 
 -- ─────────────────────────────────────────
 -- 5. INDEXES

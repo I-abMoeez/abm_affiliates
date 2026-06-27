@@ -9,6 +9,8 @@
     },
     "dependencies": {
         "express": "^4.19.2",
-        "nanoid": "^5.0.7"
+        "nanoid": "^5.0.7",
+        "@supabase/supabase-js": "^2.39.0",
+        "dotenv": "^16.4.0"
     }
 }

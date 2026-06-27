@@ -24,6 +24,7 @@
         <thead>
           <tr style="text-align:left;">
             <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Name</th>
+            <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Store</th>
             <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Category</th>
             <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Affiliate</th>
             <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Updated</th>
@@ -41,6 +42,9 @@
                   <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);">{{ it.id }}</div>
                 </div>
               </div>
+            </td>
+            <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <span style="display:inline-block;padding:0.15rem 0.6rem;border-radius:9999px;font-size:0.75rem;font-weight:600;{% if it.store == 'amazon' %}background:#ff9900;color:#000{% else %}background:#fe7300;color:#fff{% endif %}">{{ store_labels.get(it.store, it.store or '-') }}</span>
             </td>
             <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">{{ it.category or '-' }}</td>
             <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">

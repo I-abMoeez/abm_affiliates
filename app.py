@@ -43,10 +43,16 @@ except Exception:
 app = Flask(__name__)
 
 
+@app.context_processor
+def _inject_globals():
+    return {"stores": STORES, "categories": CATEGORIES, "store_labels": STORE_LABELS}
+
+
 PRODUCTS = [
     {
         "id": 1,
         "name": "Sony WH-1000XM5",
+        "store": "amazon",
         "category": "audio",
         "category_label": "Audio",
         "price": 349.99,
@@ -57,11 +63,13 @@ PRODUCTS = [
         "badge": "Best Seller",
         "description": "Industry-leading noise cancellation with 30-hour battery life. The gold standard for wireless headphones.",
         "affiliate_url": "https://amazon.com",
+        "manual_url": "",
         "features": ["30hr battery", "ANC Pro", "Multipoint", "LDAC"],
     },
     {
         "id": 2,
         "name": "Apple MacBook Air M3",
+        "store": "amazon",
         "category": "laptops",
         "category_label": "Laptops",
         "price": 1099.00,
@@ -72,11 +80,13 @@ PRODUCTS = [
         "badge": "Editor's Pick",
         "description": "Blazing fast M3 chip with 18-hour battery. Fanless, silent, impossibly thin.",
         "affiliate_url": "https://apple.com",
+        "manual_url": "",
         "features": ["M3 chip", "18hr battery", "Fanless", "15\" display"],
     },
     {
         "id": 3,
         "name": "Samsung 65\" Neo QLED",
+        "store": "amazon",
         "category": "tvs",
         "category_label": "TVs",
         "price": 1299.99,
@@ -87,11 +97,13 @@ PRODUCTS = [
         "badge": "Hot Deal",
         "description": "Mini LED quantum dots deliver cinema-grade picture. Deep blacks, vivid color, 144Hz gaming.",
         "affiliate_url": "https://samsung.com",
+        "manual_url": "",
         "features": ["4K 144Hz", "Neo QLED", "HDR2000", "Gaming Hub"],
     },
     {
         "id": 4,
         "name": "DJI Mini 4 Pro",
+        "store": "amazon",
         "category": "cameras",
         "category_label": "Cameras",
         "price": 759.00,
@@ -102,11 +114,13 @@ PRODUCTS = [
         "badge": "New",
         "description": "Under 249g with 4K/60fps and omnidirectional obstacle sensing. The perfect travel drone.",
         "affiliate_url": "https://dji.com",
+        "manual_url": "",
         "features": ["249g weight", "4K/60fps", "34min flight", "Obstacle avoid"],
     },
     {
         "id": 5,
         "name": "Bose QuietComfort Ultra",
+        "store": "amazon",
         "category": "audio",
         "category_label": "Audio",
         "price": 299.00,
@@ -117,11 +131,13 @@ PRODUCTS = [
         "badge": None,
         "description": "Spatial audio with CustomTune technology. Bose's best ANC headphone ever made.",
         "affiliate_url": "https://bose.com",
+        "manual_url": "",
         "features": ["Spatial Audio", "CustomTune", "24hr battery", "EQ app"],
     },
     {
         "id": 6,
         "name": "ASUS ROG Zephyrus G14",
+        "store": "daraz",
         "category": "laptops",
         "category_label": "Laptops",
         "price": 1449.00,
@@ -132,22 +148,40 @@ PRODUCTS = [
         "badge": "Top Rated",
         "description": "AMD Ryzen 9 + RTX 4060 in a 14\" ultraportable. Serious gaming power without the bulk.",
         "affiliate_url": "https://asus.com",
+        "manual_url": "",
         "features": ["RTX 4060", "Ryzen 9", "120Hz OLED", "2.2kg"],
     },
 ]
 
-CATEGORIES = [
-    {"slug": "audio", "label": "Audio", "icon": "🎧", "desc": "Headphones, speakers & earbuds", "count": 2},
-    {"slug": "laptops", "label": "Laptops", "icon": "💻", "desc": "Ultrabooks, gaming & workstations", "count": 2},
-    {"slug": "tvs", "label": "TVs", "icon": "📺", "desc": "4K, OLED & smart displays", "count": 1},
-    {"slug": "cameras", "label": "Cameras", "icon": "📷", "desc": "Drones, mirrorless & action cams", "count": 1},
+STORES = [
+    {"slug": "amazon", "label": "Amazon", "icon": "🛒", "desc": "Amazon products & deals", "count": 5, "color": "#ff9900"},
+    {"slug": "daraz", "label": "Daraz", "icon": "🛍️", "desc": "Daraz products & deals", "count": 1, "color": "#fe7300"},
 ]
+
+CATEGORIES = []
+
+
+STORE_LABELS = {"amazon": "Amazon", "daraz": "Daraz"}
 
 
 @app.route("/")
 def index():
     featured = [p for p in PRODUCTS if p["badge"]][:3]
-    return render_template("index.html", products=featured, categories=CATEGORIES)
+    return render_template("index.html", products=featured, categories=CATEGORIES, stores=STORES)
+
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html", stores=STORES, categories=CATEGORIES)
+
+
+@app.route("/store/<slug>")
+def store_view(slug):
+    store = next((s for s in STORES if s["slug"] == slug), None)
+    if not store:
+        return "Store not found", 404
+    items = [p for p in PRODUCTS if p["store"] == slug]
+    return render_template("store.html", store=store, products=items, stores=STORES, categories=CATEGORIES)
 
 
 @app.route("/category/<slug>")
@@ -156,7 +190,7 @@ def category(slug):
     if not cat:
         return "Category not found", 404
     items = [p for p in PRODUCTS if p["category"] == slug]
-    return render_template("category.html", category=cat, products=items, categories=CATEGORIES)
+    return render_template("category.html", category=cat, products=items, categories=CATEGORIES, stores=STORES)
 
 
 @app.route("/product/<int:pid>")
@@ -165,7 +199,7 @@ def product(pid):
     if not item:
         return "Product not found", 404
     related = [p for p in PRODUCTS if p["category"] == item["category"] and p["id"] != pid][:3]
-    return render_template("product.html", product=item, related=related, categories=CATEGORIES)
+    return render_template("product.html", product=item, related=related, categories=CATEGORIES, stores=STORES)
 
 
 def _get_supabase_admin():
@@ -239,6 +273,41 @@ def track_click():
         return jsonify({"error": str(e)}), 500
 
 
+def _render_not_found(e=None):
+    available = [
+        "GET /",
+        "GET /dashboard",
+        "GET /store/<slug>",
+        "GET /category/<slug>",
+        "GET /product/<pid>",
+        "POST /track-click",
+    ]
+    return (
+        "<h1>404 - URL not found</h1>"
+        "<p>Requested URL was not matched by any route.</p>"
+        "<h3>Available routes:</h3><ul>"
+        + "".join(f"<li>{r}</li>" for r in available)
+        + "</ul><p>If you’re running a different server (e.g. api/), check its port too.</p>"
+    ), 404
+
+
+@app.errorhandler(404)
+def not_found_handler(e):
+    return _render_not_found(e)
+
+
+@app.errorhandler(500)
+def internal_error_handler(e):
+    return (
+        "<h1>500 - Server error</h1>"
+        "<p>Something crashed while processing this request.</p>"
+        "<p>Check Flask console output for traceback.</p>"
+    ), 500
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.getenv("PORT", "5000"))
+    # Avoid blank pages by ensuring Flask logs errors in console.
+    app.run(debug=True, host="0.0.0.0", port=port)
+
 

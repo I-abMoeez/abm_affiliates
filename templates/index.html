@@ -4,7 +4,7 @@
 
 {% block background %}
 <div class="video-bg-wrap">
-  <video id="bg-video" autoplay muted playsinline loop="false" preload="auto">
+  <video id="bg-video" autoplay muted playsinline preload="auto">
     <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4" type="video/mp4" />
   </video>
   <div class="video-overlay"></div>
@@ -41,7 +41,7 @@
 <section class="section" id="featured">
   <div class="section-header">
     <h2 class="section-title">Featured this week</h2>
-    <a href="/category/audio" class="section-link">See all →</a>
+    <a href="/dashboard" class="section-link">See all →</a>
   </div>
   <div class="products-grid">
     {% for p in products %}
@@ -49,6 +49,7 @@
       <div class="product-card-img">
         <img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy" />
         {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+        <span class="store-badge store-{{ p.store }}">{{ store_labels[p.store] }}</span>
       </div>
       <div class="product-card-body">
         <p class="product-cat">{{ p.category_label }}</p>
@@ -78,10 +79,40 @@
             onclick="event.stopPropagation()"
           >
 
-            Buy now
+            Buy Now on {{ store_labels[p.store] }}
           </a>
+          {% if p.manual_url %}
+          <a
+            href="{{ p.manual_url }}"
+            target="_blank"
+            rel="noopener"
+            class="btn-secondary product-buy-btn liquid-glass"
+            onclick="event.stopPropagation()"
+            style="border-radius:9999px; font-size:0.8rem; padding:0.6rem 1.2rem;"
+          >
+            Manual Link
+          </a>
+          {% endif %}
         </div>
       </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Stores -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Shop by store</h2>
+    <a href="/dashboard" class="section-link">View all →</a>
+  </div>
+  <div class="categories-grid">
+    {% for s in stores %}
+    <a href="/store/{{ s.slug }}" class="cat-card liquid-glass" style="border-left: 3px solid {{ s.color }};">
+      <span class="cat-icon">{{ s.icon }}</span>
+      <p class="cat-label">{{ s.label }}</p>
+      <p class="cat-desc">{{ s.desc }}</p>
+      <p class="cat-count">{{ s.count }} products</p>
     </a>
     {% endfor %}
   </div>

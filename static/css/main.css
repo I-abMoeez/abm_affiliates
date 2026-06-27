@@ -303,6 +303,41 @@ body {
 }
 
 
+/* ── Store Badge ── */
+
+.store-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    color: #fff;
+    z-index: 2;
+}
+
+.store-badge.store-amazon {
+    background: #ff9900;
+    color: #000;
+}
+
+.store-badge.store-daraz {
+    background: #fe7300;
+    color: #fff;
+}
+
+.product-buy-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+
 /* ── Section Styles ── */
 
 .section {

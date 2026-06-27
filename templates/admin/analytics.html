@@ -18,6 +18,33 @@
       </div>
     </div>
 
+    <div style="margin-top:1rem;">
+      <h2 style="margin:0 0 0.75rem 0;font-size:1rem;">Top Products</h2>
+      <div style="overflow:auto;max-height:420px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left;">
+              <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Product</th>
+              <th style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.08);">Clicks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in top_products %}
+            <tr>
+              <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div style="font-weight:650;">{{ p.name }}</div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">{{ p.product_id }}</div>
+              </td>
+              <td style="padding:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:700;">{{ p.count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+      </div>
+    </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;">
       <div class="liquid-glass" style="padding:1rem;border-radius:14px;background:rgba(255,255,255,0.02);">
         <div style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Total clicks</div>

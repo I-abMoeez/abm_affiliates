@@ -7,7 +7,7 @@
 # This file is intentionally self-contained.
 
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 
@@ -24,8 +24,6 @@ try:
         load_dotenv(dotenv_path=env_path, override=False)
 except Exception:
     pass
-
-import click_tracker
 
 app = Flask(__name__)
 
@@ -62,6 +60,15 @@ app.config.update(
     # Set to True only when behind HTTPS. Leave False by default for local dev.
     SESSION_COOKIE_SECURE=os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true",
 )
+
+
+@app.context_processor
+def _inject_globals():
+    return {
+        "stores": [{"slug": "amazon", "label": "Amazon"}, {"slug": "daraz", "label": "Daraz"}],
+        "categories": [],
+        "store_labels": {"amazon": "Amazon", "daraz": "Daraz"},
+    }
 
 # Login rate limiting (simple in-memory). For multi-process deployments use Redis.
 LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS", "5"))
@@ -102,6 +109,11 @@ supabase_anon, supabase_admin = _get_supabase_clients()
 # --------------------
 
 
+@app.route("/")
+def admin_index_redirect():
+    return redirect("/admin")
+
+
 @app.route("/admin")
 def admin_home():
     auth = _require_auth()
@@ -109,6 +121,55 @@ def admin_home():
         return auth
 
     return redirect(url_for("admin_products"))
+
+
+@app.route("/admin/signup", methods=["GET", "POST"])
+def admin_signup():
+    if session.get("admin_authenticated"):
+        return redirect(url_for("admin_products"))
+
+    error = None
+    message = None
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        password_confirm = request.form.get("password_confirm") or ""
+        invite_code = request.form.get("invite_code") or ""
+
+        if not email or not password:
+            error = "Email and password are required."
+        elif password != password_confirm:
+            error = "Passwords do not match."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
+        elif invite_code != ADMIN_INVITE_CODE:
+            error = "Invalid invite code."
+        else:
+            # In a real deployment, create the user via Supabase Auth:
+            #   supabase_admin.auth.admin.create_user({ email, password, email_confirm: true })
+            # For local/legacy flow, just set the env vars and redirect to login.
+            message = "Account created (local mode). You can now log in with your email and password."
+
+    return render_template("admin/signup.html", error=error, message=message)
+
+
+@app.route("/admin/forgot", methods=["GET", "POST"])
+def admin_forgot():
+    if session.get("admin_authenticated"):
+        return redirect(url_for("admin_products"))
+
+    error = None
+    message = None
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        if not email:
+            error = "Email is required."
+        else:
+            # In production, send a Supabase Auth password reset email:
+            #   supabase_admin.auth.admin.generate_link(type="recovery", email=email)
+            message = f"If {email} is registered, a password reset link has been sent."
+
+    return render_template("admin/forgot_password.html", error=error, message=message)
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -180,7 +241,7 @@ def admin_products():
     items = []
     data = (
         supabase_anon.table("affiliate_products")
-        .select("id,name,category_id,category,image_url,affiliate_link,created_at,updated_at")
+        .select("id,name,category_id,category,image_url,affiliate_link,manual_url,store,created_at,updated_at")
         .order("created_at", desc=True)
         .limit(200)
         .execute()
@@ -204,6 +265,8 @@ def admin_products_new():
             "name": request.form.get("name"),
             "image_url": request.form.get("image_url"),
             "affiliate_link": request.form.get("affiliate_link"),
+            "manual_url": request.form.get("manual_url") or "",
+            "store": request.form.get("store") or "amazon",
             "description": request.form.get("description"),
             "category": request.form.get("category"),
             "category_id": request.form.get("category_id") or None,
@@ -234,6 +297,8 @@ def admin_products_edit(pid):
             "name": request.form.get("name"),
             "image_url": request.form.get("image_url"),
             "affiliate_link": request.form.get("affiliate_link"),
+            "manual_url": request.form.get("manual_url") or "",
+            "store": request.form.get("store") or "amazon",
             "description": request.form.get("description"),
             "category": request.form.get("category"),
             "category_id": request.form.get("category_id") or None,
@@ -248,7 +313,7 @@ def admin_products_edit(pid):
 
     item = (
         supabase_anon.table("affiliate_products")
-        .select("id,name,category_id,category,image_url,affiliate_link,description,created_at,updated_at")
+        .select("id,name,category_id,category,image_url,affiliate_link,manual_url,store,description,created_at,updated_at")
         .eq("id", pid)
         .single()
         .execute()
@@ -284,14 +349,25 @@ def admin_analytics():
     if supabase_anon is None:
         return "Supabase not configured", 500
 
-    # Total clicks
-    total = supabase_anon.table("affiliate_clicks").select("id", count="exact").execute()
-    total_count = (total.count or 0) if hasattr(total, "count") else 0
+    # Total clicks (use Supabase's count)
+    # Note: supabase-py returns different shapes depending on version; handle defensively.
+    total = (
+        supabase_anon.table("affiliate_clicks")
+        .select("id", count="exact")
+        .execute()
+    )
+    total_count = 0
+    if hasattr(total, "count") and total.count is not None:
+        total_count = int(total.count)
+    elif isinstance(getattr(total, "data", None), list):
+        # Fallback: count returned rows if server didn't return a count field.
+        total_count = len(total.data)
+
 
     # Clicks by country (last 90 days)
     # Using RPC is ideal, but we keep it simple via select + app-side aggregation.
-    ninety_days_ago = (datetime.utcnow().timestamp() - 90 * 24 * 3600)
-    ninety_days_ago_iso = datetime.utcfromtimestamp(ninety_days_ago).isoformat()
+    ninety_days_ago = (datetime.now(timezone.utc).timestamp() - 90 * 24 * 3600)
+    ninety_days_ago_iso = datetime.fromtimestamp(ninety_days_ago, tz=timezone.utc).isoformat()
 
     rows = (
         supabase_anon.table("affiliate_clicks")

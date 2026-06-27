@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ category.label }} Reviews — LensDesk{% endblock %}
+{% block title %}{{ store.label }} Products — LensDesk{% endblock %}
 
 {% block background %}
 <div class="page-bg" style="background: radial-gradient(ellipse 90% 50% at 50% -10%, #1a1528 0%, #050508 60%);"></div>
@@ -8,20 +8,10 @@
 
 {% block content %}
 
-<!-- Category Hero -->
 <div class="cat-hero">
-  <p class="cat-hero-eyebrow">{{ category.label }} · {{ category.count }} products</p>
-  <h1>{{ category.icon }} {{ category.label }}</h1>
-  <p>{{ category.desc }} — handpicked and thoroughly tested by our editorial team.</p>
-</div>
-
-<!-- Filter Bar -->
-<div class="filter-bar">
-  <button class="filter-pill active">All</button>
-  <button class="filter-pill">Best Rated</button>
-  <button class="filter-pill">Price: Low → High</button>
-  <button class="filter-pill">Biggest Savings</button>
-  <button class="filter-pill">New Arrivals</button>
+  <p class="cat-hero-eyebrow">{{ store.label }} · {{ store.count }} products</p>
+  <h1>{{ store.icon }} {{ store.label }}</h1>
+  <p>{{ store.desc }} — handpicked and thoroughly tested by our editorial team.</p>
 </div>
 
 <!-- Products -->
@@ -62,7 +52,6 @@
             data-affiliate-url="{{ p.affiliate_url }}"
             onclick="event.stopPropagation()"
           >
-
             Buy Now on {{ store_labels[p.store] }}
           </a>
           {% if p.manual_url %}
@@ -84,27 +73,10 @@
   </div>
   {% else %}
   <div style="text-align:center; padding: 5rem 0; color: rgba(255,255,255,0.4);">
-    <p style="font-size:2rem; margin-bottom:1rem;">{{ category.icon }}</p>
-    <p>No products yet in this category. Check back soon.</p>
+    <p style="font-size:2rem; margin-bottom:1rem;">{{ store.icon }}</p>
+    <p>No products yet in {{ store.label }}. Check back soon.</p>
   </div>
   {% endif %}
 </div>
-
-<!-- Browse other categories -->
-<section class="section" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 4rem;">
-  <div class="section-header">
-    <h2 class="section-title">Browse other categories</h2>
-  </div>
-  <div class="categories-grid">
-    {% for cat in categories if cat.slug != category.slug %}
-    <a href="/category/{{ cat.slug }}" class="cat-card liquid-glass">
-      <span class="cat-icon">{{ cat.icon }}</span>
-      <p class="cat-label">{{ cat.label }}</p>
-      <p class="cat-desc">{{ cat.desc }}</p>
-      <p class="cat-count">{{ cat.count }} reviews</p>
-    </a>
-    {% endfor %}
-  </div>
-</section>
 
 {% endblock %}

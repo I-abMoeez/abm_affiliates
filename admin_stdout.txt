@@ -1,0 +1,2 @@
+ * Serving Flask app 'admin_dashboard'
+ * Debug mode: on

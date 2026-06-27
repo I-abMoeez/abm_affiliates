@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — LensDesk{% endblock %}
+
+{% block background %}
+<div class="page-bg" style="background: radial-gradient(ellipse 90% 50% at 50% -10%, #1a1528 0%, #050508 60%);"></div>
+{% endblock %}
+
+{% block content %}
+
+<div class="cat-hero">
+  <h1>Dashboard</h1>
+  <p>Browse products by store — choose Amazon or Daraz to start shopping.</p>
+</div>
+
+<!-- Store Categories -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Shop by Store</h2>
+  </div>
+  <div class="categories-grid">
+    {% for s in stores %}
+    <a href="/store/{{ s.slug }}" class="cat-card liquid-glass" style="border-left: 3px solid {{ s.color }};">
+      <span class="cat-icon">{{ s.icon }}</span>
+      <p class="cat-label">{{ s.label }}</p>
+      <p class="cat-desc">{{ s.desc }}</p>
+      <p class="cat-count">{{ s.count }} products</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Product Categories -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Browse by Category</h2>
+  </div>
+  <div class="categories-grid">
+    {% for cat in categories %}
+    <a href="/category/{{ cat.slug }}" class="cat-card liquid-glass">
+      <span class="cat-icon">{{ cat.icon }}</span>
+      <p class="cat-label">{{ cat.label }}</p>
+      <p class="cat-desc">{{ cat.desc }}</p>
+      <p class="cat-count">{{ cat.count }} reviews</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
