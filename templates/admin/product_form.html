@@ -32,7 +32,7 @@
 
       <label style="display:flex;flex-direction:column;gap:0.35rem;">
         Store
-        <select name="store" style="padding:0.5rem;border-radius:8px;background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.1);">
+        <select name="store" style="padding:0.5rem;border-radius:8px;background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.12);outline:none;">
           <option value="amazon" {% if item and item.store == 'amazon' %}selected{% endif %}>Amazon</option>
           <option value="daraz" {% if item and item.store == 'daraz' %}selected{% endif %}>Daraz</option>
         </select>

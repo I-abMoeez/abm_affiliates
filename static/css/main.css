@@ -10,8 +10,15 @@
 :root {
     --white: #ffffff;
     --white-90: rgba(255, 255, 255, 0.9);
+    --white-80: rgba(255, 255, 255, 0.8);
     --white-70: rgba(255, 255, 255, 0.7);
+    --white-65: rgba(255, 255, 255, 0.65);
+    --white-60: rgba(255, 255, 255, 0.6);
+    --white-50: rgba(255, 255, 255, 0.5);
     --white-40: rgba(255, 255, 255, 0.4);
+    --white-35: rgba(255, 255, 255, 0.35);
+    --white-30: rgba(255, 255, 255, 0.3);
+    --white-25: rgba(255, 255, 255, 0.25);
     --white-10: rgba(255, 255, 255, 0.1);
     --white-05: rgba(255, 255, 255, 0.05);
     --white-02: rgba(255, 255, 255, 0.02);
@@ -106,6 +113,14 @@ body {
     z-index: 100;
     padding: 1.5rem 1.5rem;
     overflow: hidden;
+    pointer-events: auto;
+}
+
+
+/* Prevent content from going under the fixed navbar */
+
+main {
+    padding-top: 110px;
 }
 
 .nav-inner {
@@ -965,4 +980,41 @@ body {
         align-items: flex-start;
         gap: 0.5rem;
     }
+}
+
+
+/* ── Form Elements ── */
+
+input,
+textarea,
+select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--white-40);
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--white-70);
 }
